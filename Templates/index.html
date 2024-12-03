@@ -3,30 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Blog Post</title>
+    <title>Datalogics QR Code Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
-<body>
-    <h1>Add a New Blog Post</h1>
-    <form action="/api/blog/posts" method="POST" enctype="multipart/form-data">
-        <label for="title">Title:</label><br>
-        <input type="text" id="title" name="title" required><br><br>
+<body class="bg-gray-100">
+    <div id="app" class="container mx-auto px-4 py-8 max-w-2xl">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h1 class="text-2xl font-bold mb-6">Datalogics QR Code Tracker</h1>
+            
+            <!-- QR Code Display -->
+            <div class="mb-6">
+                <div class="flex justify-center mb-4">
+                    <img src="{{ qr_code.png }}" alt="Datalogics QR Code" class="w-64 h-64">
+                </div>
+                <p class="text-center text-gray-600">Scan to visit: {{ qr_code.qr_data }}</p>
+                
+                <!-- Scan Statistics -->
+                <div class="bg-gray-50 p-4 rounded-lg mt-6">
+                    <h3 class="text-lg font-semibold mb-4">Scan Statistics</h3>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded shadow">
+                            <p class="text-sm text-gray-600">Today's Scans</p>
+                            <p class="text-2xl font-bold text-blue-600">[[ stats.today ]]</p>
+                            <p class="text-xl font-semibold text-blue-500">([[ stats.today_unique ]] new)</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow">
+                            <p class="text-sm text-gray-600">Yesterday</p>
+                            <p class="text-2xl font-bold text-green-600">[[ stats.yesterday ]]</p>
+                            <p class="text-sm text-gray-500">([[ stats.yesterday_unique ]] unique)</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow">
+                            <p class="text-sm text-gray-600">Last 7 Days</p>
+                            <p class="text-2xl font-bold text-purple-600">[[ stats.last_7_days ]]</p>
+                            <p class="text-sm text-gray-500">([[ stats.last_7_days_unique ]] unique)</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow">
+                            <p class="text-sm text-gray-600">Last 30 Days</p>
+                            <p class="text-2xl font-bold text-orange-600">[[ stats.last_30_days ]]</p>
+                            <p class="text-sm text-gray-500">([[ stats.last_30_days_unique ]] unique)</p>
+                        </div>
+                    </div>
 
-        <label for="content">Content:</label><br>
-        <textarea id="content" name="content" rows="10" required></textarea><br><br>
+                    <div class="bg-white p-4 rounded shadow mb-4">
+                        <p class="text-sm text-gray-600">Total Scans</p>
+                        <p class="text-3xl font-bold text-indigo-600">[[ stats.total ]]</p>
+                        <p class="text-2xl font-semibold text-indigo-500">([[ stats.total_unique ]] new devices)</p>
+                    </div>
+                    
+                    <!-- Recent Scans -->
+                    <div v-if="stats.recent_scans && stats.recent_scans.length > 0">
+                        <h4 class="font-semibold mb-2">Recent Scans:</h4>
+                        <div v-for="(scan, index) in stats.recent_scans" :key="index" 
+                             class="bg-white p-3 rounded mb-2 shadow-sm">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm text-gray-600">Time: [[ scan.time ]]</p>
+                                    <p class="text-sm text-gray-600">Location: [[ scan.location ]]</p>
+                                    <p class="text-sm text-gray-600">Device: [[ scan.device ]]</p>
+                                </div>
+                                <span v-if="scan.is_unique" 
+                                      class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
+                                    New Visitor
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <label for="categories">Categories:</label><br>
-        <input type="text" id="categories" name="categories" placeholder="Enter categories separated by commas" required><br><br>
+    <script>
+        const { createApp, ref, onMounted, onUnmounted } = Vue
 
-        <label for="writtenBy">Written By:</label><br>
-        <input type="text" id="writtenBy" name="writtenBy" required><br><br>
+        createApp({
+            delimiters: ['[[', ']]'],
+            setup() {
+                const stats = ref({
+                    total: 0,
+                    total_unique: 0,
+                    today: 0,
+                    today_unique: 0,
+                    yesterday: 0,
+                    yesterday_unique: 0,
+                    last_7_days: 0,
+                    last_7_days_unique: 0,
+                    last_30_days: 0,
+                    last_30_days_unique: 0,
+                    recent_scans: []
+                })
+                let pollInterval = null
 
-        <label for="publishedOn">Published On:</label><br>
-        <input type="text" id="publishedOn" name="publishedOn" placeholder="DD Month YYYY" required><br><br>
+                async function fetchStats() {
+                    try {
+                        const response = await fetch('/stats')
+                        const data = await response.json()
+                        stats.value = data
+                    } catch (error) {
+                        console.error('Error fetching stats:', error)
+                    }
+                }
 
-        <label for="image">Image:</label><br>
-        <input type="file" id="image" name="image"><br><br>
+                onMounted(() => {
+                    fetchStats()
+                    pollInterval = setInterval(fetchStats, 30000)
+                })
 
-        <button type="submit">Submit</button>
-    </form>
+                onUnmounted(() => {
+                    if (pollInterval) {
+                        clearInterval(pollInterval)
+                    }
+                })
+
+                return {
+                    stats
+                }
+            }
+        }).mount('#app')
+    </script>
 </body>
 </html>
