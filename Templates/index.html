@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Blog Post</title>
+</head>
+<body>
+    <h1>Add a New Blog Post</h1>
+    <form action="/api/blog/posts" method="POST" enctype="multipart/form-data">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" required><br><br>
+
+        <label for="content">Content:</label><br>
+        <textarea id="content" name="content" rows="10" required></textarea><br><br>
+
+        <label for="categories">Categories:</label><br>
+        <input type="text" id="categories" name="categories" placeholder="Enter categories separated by commas" required><br><br>
+
+        <label for="writtenBy">Written By:</label><br>
+        <input type="text" id="writtenBy" name="writtenBy" required><br><br>
+
+        <label for="publishedOn">Published On:</label><br>
+        <input type="text" id="publishedOn" name="publishedOn" placeholder="DD Month YYYY" required><br><br>
+
+        <label for="image">Image:</label><br>
+        <input type="file" id="image" name="image"><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
