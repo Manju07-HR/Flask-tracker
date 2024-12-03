@@ -178,7 +178,7 @@ def process_scan_stats(scans):
 @app.route('/')
 def index():
     qr_code = create_or_get_qr_code()
-    return render_template('trackappl.html', qr_code=qr_code)
+    return render_template('index.html', qr_code=qr_code)
 
 @app.route('/stats')
 def get_stats():
