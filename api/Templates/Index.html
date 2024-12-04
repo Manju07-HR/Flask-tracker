@@ -3,630 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mailer Tool</title>
-    <style>
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        } 
-
-        body {
-            font-family: Arial, sans-serif; 
-            background-color: #f4f4f9;
-            display: grid;
-            place-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 400px;
-            background-color: #ffffff;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0px 4px 6px rgba(0, 0, 10px, 0.5);
-            display: grid;
-            gap: 1rem;
-        }
-
-        .password{
-            display: grid;
-            width: 100%;
-            grid-template-columns: 1fr;
-            position: relative;
-        }
-
-        .password span{
-            position: absolute;
-            right: 0;
-            top: 0%;
-            transform: translate(-50% ,50%);
-            transition: all 250ms ease-in-out;
-        }
-
-        #emailFormContainer{
-            display: none;
-            position: sticky;
-            top: 0;
-        }
-
-        @media screen and (max-width: 1229px) {
-            #emailFormContainer{
-            display: none;
-            position: relative;
-            top: 0;
-        }
-        }
-
-        form{
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            align-content: center; 
-            justify-content: center;
-        }
-
-        #emailForm{
-            gap: 1rem;
-        } 
-
-        #emailForm label{
-            font-size: 12px;
-            font-weight: 500;
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        .radio{
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            justify-content: flex-start;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .radio p{
-            font-size: 14px;
-        }
-
-        .radio label{
-            background-color: #f5f5f5;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            transition: all 250ms ease-in-out;
-        }
-
-        .RadioChecked{
-            background-color: #d80128!important;
-            color: white;
-        }
-
-        input, textarea{
-            width: 100%;
-            max-width: 380px;
-            padding: 0.5rem;
-            border: 1px solid transparent;
-            outline: none;
-            background-color: #f5f5f5;
-            border-radius: 0.5rem;
-            color: #000000;
-            transition: all 250ms ease-in-out;
-            will-change: background-color, color;
-        }
-
-        input:user-invalid{
-            border: 1px solid #d80128;
-        }
-
-        input:user-valid{
-            border: 1px solid transparent;
-        }
-
-        textarea{
-            resize: vertical;
-        }
-
-        #recipients{
-            will-change: opacity;
-        }
-
-        #recipients:disabled, #password:disabled{
-            opacity: 0.5;
-        }
-
-        #password:disabled ~ span{
-            opacity: 0.25;
-        }
-
-        #BulkMail{
-            display: none;
-        }
-
-        input[type="checkbox"], input[type="radio"]{
-            width: 15px;
-            height: 15px;
-            accent-color: #000000;
-            display: none;
-            transition: all 250ms ease-in-out;
-        }
-
-        input[type="submit"]{
-            width: 100%;
-            max-width: 400px;
-            padding: 0.5rem;
-            border: 1px solid transparent;
-            outline: none;
-            background-color: #000000;
-            border-radius: 0.5rem;
-            color: #f5f5f5;
-            cursor: pointer;
-            transition: all 250ms ease-in-out;
-        }
-
-        input[type="submit"]:hover{
-            border: 1px solid #000000;
-            background-color: #d80128;
-            color: #f5f5f5;
-        }
-
-        .formandpreview{
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            width: 100%;
-            padding: 2rem;
-            justify-content: space-evenly;
-            align-items: flex-start;
-            position: relative;
-        }
-
-        .previewcontainer{
-            width: 100%;
-            max-width: 750px;
-            gap: 1rem;
-            padding: 1rem;
-            border-radius: 1rem;
-            background-color: #ffffff;
-        }
-        .previewcontainer .preview{
-            width: 100%;
-            border: none;
-            outline: none;
-            box-shadow: 0px 4px 6px rgba(0, 0, 10px, 0.5);
-        }
-
-        .previewType{
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        .previewType p{
-            font-size: 12px;
-            font-weight: 500;
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            justify-content: flex-start;
-            background-color: #f5f5f5;
-            padding: 0.5rem;
-            border-radius: 999rem;
-            border: 1px solid #d80128;
-        }
-
-        .previewType p span{
-            width: 15px;
-            height: 15px;
-            background-color: #d80128;
-            border-radius: 50%;
-            display: block;
-        }
-
-        .BulkMail{
-            background-color: #f5f5f5;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            transition: all 250ms ease-in-out;
-        }
-
-        .MobileRadio, .LaptopRadio{
-            background-color: #f5f5f5;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            transition: all 250ms ease-in-out;
-        }
-
-        @media screen and (max-width: 600px) {
-            .MobileRadio, .LaptopRadio{
-                display: none;
-            }
-        }
-
-        #attachmentPreview{
-            width: 100%;
-            max-width: 400px;
-            height: 100%;
-            max-height: 200px;
-            object-fit: contain;
-        }
-
-        .toggle{
-            width: 30px;
-            height: 16px;
-            background-color: #000000;
-            border-radius: 5rem;
-            position: relative;
-            transition: all 250ms ease-in-out;
-        }
-
-        .toggle::after{
-            content: "";
-            width: 12px;
-            height: 12px;
-            background-color: #f5f5f5;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 8px;
-            transform: translate(-50%, -50%);
-            transition: all 350ms cubic-bezier(.42,-0.5,.59,1.5);
-        }
-
-        #BulkMail:checked ~ .toggle{
-            background-color: #f5f5f5;
-        }
-
-        #BulkMail:checked ~ .toggle::after{
-            left: 22px;
-            background-color: #d80128;
-        }
-
-        .logOut{
-            position: absolute;
-            top: 5%;
-            right: 5%;
-            background-color: #000000;
-            color: #f5f5f5;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 0.5rem;
-            transition: all 250ms ease-in-out;
-        }
-    </style>
+    <title>Datalogics QR Code Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
-<body>
-    <!-- <button class="logOut">Log Out</button> -->
-    <div class="container" id="loginFormContainer">
-        <h1>Login</h1>
-        <form id="loginForm" onsubmit="handleLogin(event)">
-            <input type="text" id="username" name="username" placeholder="Username" required><br>
-            <div class="password">
-                <input type="password" id="password" name="password" placeholder="Password" required><span style="width: 15px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"/></svg></span><br>
-            </div>
-            <input type="submit" value="Login">
-        </form>
-    </div>
-    <div class="formandpreview">
-        <div class="container" id="emailFormContainer">
-            <h1>Send Email</h1>
-            <form id="emailForm" onsubmit="handleSubmit(event)" enctype="multipart/form-data">
-                <div>
-                    <label for="BulkMail" class="BulkMail"><input type="checkbox" name="Bulk" value="Bulk" id="BulkMail"><span class="toggle"></span> Bulk Email </label>
+<body class="bg-gray-100">
+    <div id="app" class="container mx-auto px-4 py-8 max-w-2xl">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h1 class="text-2xl font-bold mb-6">Datalogics QR Code Tracker</h1>
+            
+            <!-- QR Code Display -->
+            <div class="mb-6">
+                <div class="flex justify-center mb-4">
+                    <img src="{{ qr_code.png }}" alt="Datalogics QR Code" class="w-64 h-64">
                 </div>
-                <input type="email" id="sender" name="sender" placeholder="Sender Email" required>
-                <textarea id="recipients" name="recipients" placeholder="Recipients (comma-separated)" rows="2"></textarea>
-                <textarea id="cc" name="cc" placeholder="CC" rows="2"></textarea>
-                <textarea id="bcc" name="bcc" placeholder="BCC" rows="2"></textarea>
-                <input type="text" id="subject" name="subject" placeholder="Subject" required>
-                <div class="radio">
-                    <p>Message Type</p>
-                    <Label for="HTML" class="HTMLRadio"><input type="radio" name="HTML" id="HTML" checked>HTML</Label>
-                    <Label for="Text" class="TextRadio"><input type="radio" name="Text" id="Text">Text</Label>
+                <p class="text-center text-gray-600">Scan to visit: {{ qr_code.qr_data }}</p>
+                
+                <!-- Scan Statistics -->
+                <div class="bg-gray-50 p-4 rounded-lg mt-6">
+                    <h3 class="text-lg font-semibold mb-4">Scan Statistics</h3>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded shadow">
+                            <p class="text-sm text-gray-600">Today's Scans</p>
+                            <p class="text-2xl font-bold text-blue-600">[[ stats.today ]]</p>
+                            <p class="text-xl font-semibold text-blue-500">([[ stats.today_unique ]] new)</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow">
+                            <p class="text-sm text-gray-600">Yesterday</p>
+                            <p class="text-2xl font-bold text-green-600">[[ stats.yesterday ]]</p>
+                            <p class="text-sm text-gray-500">([[ stats.yesterday_unique ]] unique)</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow">
+                            <p class="text-sm text-gray-600">Last 7 Days</p>
+                            <p class="text-2xl font-bold text-purple-600">[[ stats.last_7_days ]]</p>
+                            <p class="text-sm text-gray-500">([[ stats.last_7_days_unique ]] unique)</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow">
+                            <p class="text-sm text-gray-600">Last 30 Days</p>
+                            <p class="text-2xl font-bold text-orange-600">[[ stats.last_30_days ]]</p>
+                            <p class="text-sm text-gray-500">([[ stats.last_30_days_unique ]] unique)</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded shadow mb-4">
+                        <p class="text-sm text-gray-600">Total Scans</p>
+                        <p class="text-3xl font-bold text-indigo-600">[[ stats.total ]]</p>
+                        <p class="text-2xl font-semibold text-indigo-500">([[ stats.total_unique ]] new devices)</p>
+                    </div>
+                    
+                    <!-- Recent Scans -->
+                    <div v-if="stats.recent_scans && stats.recent_scans.length > 0">
+                        <h4 class="font-semibold mb-2">Recent Scans:</h4>
+                        <div v-for="(scan, index) in stats.recent_scans" :key="index" 
+                             class="bg-white p-3 rounded mb-2 shadow-sm">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm text-gray-600">Time: [[ scan.time ]]</p>
+                                    <p class="text-sm text-gray-600">Location: [[ scan.location ]]</p>
+                                    <p class="text-sm text-gray-600">Device: [[ scan.device ]]</p>
+                                </div>
+                                <span v-if="scan.is_unique" 
+                                      class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
+                                    New Visitor
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <textarea id="message" name="message" placeholder="Message (HTML)" rows="4" value="HTML Content"></textarea>
-                <textarea id="body_text" name="body_text" placeholder="Body Text" rows="4"></textarea>
-                <input type="file" id="attachment" name="attachment" accept="image/*">
-                <img src="" alt="attachment" id="attachmentPreview">
-                <input type="submit" value="Send Email" id="submit">
-            </form>
-        </div>
-        <div class="previewcontainer">
-            <h2>Preview</h2>
-            <div class="previewType">
-                <Label for="Laptop" class="LaptopRadio"><input type="radio" name="Laptop" id="Laptop" checked>Laptop / PC</Label>
-                <Label for="Mobile" class="MobileRadio"><input type="radio" name="Mobile" id="Mobile">Mobile</Label>
             </div>
-            <iframe class="preview" srcdoc="" onload="this.style.height=(this.contentDocument.body.scrollHeight+15) +'px';" scrolling="yes">
-            </iframe>
         </div>
     </div>
 
     <script>
-        function handleLogin(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+        const { createApp, ref, onMounted, onUnmounted } = Vue
 
-            fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('loginFormContainer').style.display = 'none';
-                    document.getElementById('emailFormContainer').style.display = 'grid';
-                    // localStorage.setItem('LoggedIn', 1);
-                    // LogOutBtn.style.display = 'block';
-                } else {
-                    alert('Invalid credentials. Please try again.');
+        createApp({
+            delimiters: ['[[', ']]'],
+            setup() {
+                const stats = ref({
+                    total: 0,
+                    total_unique: 0,
+                    today: 0,
+                    today_unique: 0,
+                    yesterday: 0,
+                    yesterday_unique: 0,
+                    last_7_days: 0,
+                    last_7_days_unique: 0,
+                    last_30_days: 0,
+                    last_30_days_unique: 0,
+                    recent_scans: []
+                })
+                let pollInterval = null
+
+                async function fetchStats() {
+                    try {
+                        const response = await fetch('/stats')
+                        const data = await response.json()
+                        stats.value = data
+                    } catch (error) {
+                        console.error('Error fetching stats:', error)
+                    }
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Login failed. Please try again.');
-            });
-        }
 
-        // const LogOutBtn = document.querySelector(".logOut");
+                onMounted(() => {
+                    fetchStats()
+                    pollInterval = setInterval(fetchStats, 30000)
+                })
 
-        // if(localStorage.getItem('LoggedIn') == 0) {
-        //     LogOutBtn.style.display = 'none';
-        // } else if(localStorage.getItem('LoggedIn') == 1) {
-        //     LogOutBtn.style.display = 'block';
-        // }
+                onUnmounted(() => {
+                    if (pollInterval) {
+                        clearInterval(pollInterval)
+                    }
+                })
 
-        // LogOutBtn.addEventListener("click", function() {
-        //     localStorage.setItem('LoggedIn', 0);
-        //     document.getElementById('loginFormContainer').style.display = 'grid';
-        //     document.getElementById('emailFormContainer').style.display = 'none';
-        //     if(localStorage.getItem('LoggedIn') == 0) {
-        //         LogOutBtn.style.display = 'none';
-        //     }
-        // });
-
-        // window.addEventListener('load', function() {
-        //     if(localStorage.getItem('LoggedIn') == 0) {
-        //     LogOutBtn.style.display = 'none';
-        // } else if(localStorage.getItem('LoggedIn') == 1) {
-        //     LogOutBtn.style.display = 'block';
-        // }
-        // });
-
-        const viewPassword = document.querySelector('.password span');
-        const passwordContainer = document.getElementById('password');
-
-        if(document.getElementById('username').value == "") {
-           passwordContainer.setAttribute("disabled", "true");
-           viewPassword.style.pointerEvents = 'none';
-        }
-
-        document.getElementById('username').addEventListener('input', function() {
-            if(document.getElementById('username').value == "") {
-               passwordContainer.setAttribute("disabled", "true");
-               viewPassword.style.pointerEvents = 'none';
+                return {
+                    stats
+                }
             }
-            else {
-               passwordContainer.removeAttribute("disabled");
-               viewPassword.style.pointerEvents = 'auto';
-            }
-        });
-
-        viewPassword.addEventListener('click', () => {
-            if (passwordContainer.type === 'password') {
-                passwordContainer.type = 'text';
-                viewPassword.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c8.4-19.3 10.6-41.4 4.8-63.3c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zM373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5L373 389.9z"/></svg>';
-            } else {
-                passwordContainer.type = 'password';
-                viewPassword.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"/></svg>';
-            }
-        })
-
-
-        function handleSubmit(event) {
-            event.preventDefault();
-            const form = document.getElementById('emailForm');
-            const formData = new FormData(form);
-            const submitBtn = document.querySelector('#submit');
-            document.querySelector(".previewcontainer").style.display = "none";
-            document.querySelector(".preview").innerHTML = "";
-            submitBtn.style.transition = 'all 300ms cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-            submitBtn.value = 'Sending';
-            submitBtn.style.pointerEvents = 'none';
-            submitBtn.style.opacity = '0.5';
-
-            fetch('/send_email', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(data => {
-                form.reset();
-                submitBtn.style.transition = 'all 300ms cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-                submitBtn.value = data;
-                submitBtn.style.pointerEvents = 'auto';
-                submitBtn.style.opacity = '1';
-                submitBtn.style.background = '#000000';
-
-                setTimeout(() => {
-                    submitBtn.style.transition = 'all 250ms ease-in-out';
-                    submitBtn.value = 'Send Email';
-                    submitBtn.style.pointerEvents = 'auto';
-                    submitBtn.style.opacity = '1';
-                    submitBtn.style.background = '#d80128';
-                }, 2000)
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to send email.');
-            });
-        }
-
-        const BulkMail = document.querySelector("#BulkMail");
-        const recipients = document.querySelector("#recipients");
-        const HTMLmsgType = document.querySelector("#HTML");
-        const TextMsgType = document.querySelector("#Text");
-        const HTMLmsg = document.querySelector("#message");
-        const TextMsg = document.querySelector("#body_text");
-        const HTMLRadio = document.querySelector(".HTMLRadio");
-        const TextRadio = document.querySelector(".TextRadio");
-        const previewcontainer = document.querySelector(".previewcontainer");
-        const Laptop = document.querySelector("#Laptop");
-        const Mobile = document.querySelector("#Mobile");
-
-        recipients.setAttribute("required", "true");
-
-       if(Laptop.checked) {
-            previewcontainer.style.maxWidth = "750px";
-            Mobile.checked = false;
-            document.querySelector(".LaptopRadio").style.backgroundColor = "#d80128";
-            document.querySelector(".LaptopRadio").style.color = "#ffffff";
-            document.querySelector(".MobileRadio").style.backgroundColor = "#f5f5f5";
-            document.querySelector(".MobileRadio").style.color = "#000000";
-        }
-
-        Laptop.addEventListener("change", function() {     
-            if(Laptop.checked) {
-                previewcontainer.style.maxWidth = "750px";
-                Mobile.checked = false;
-                document.querySelector(".LaptopRadio").style.backgroundColor = "#d80128";
-                document.querySelector(".LaptopRadio").style.color = "#ffffff";
-                document.querySelector(".MobileRadio").style.backgroundColor = "#f5f5f5";
-                document.querySelector(".MobileRadio").style.color = "#000000";
-                document.querySelector(".preview").srcdoc = HTMLmsg.value;
-            }
-        })
-
-        Mobile.addEventListener("change", function() {
-            if(Mobile.checked) {
-                previewcontainer.style.maxWidth = "400px";
-                Laptop.checked = false;
-                document.querySelector(".MobileRadio").style.backgroundColor = "#d80128";
-                document.querySelector(".MobileRadio").style.color = "#ffffff";
-                document.querySelector(".LaptopRadio").style.backgroundColor = "#f5f5f5";
-                document.querySelector(".LaptopRadio").style.color = "#000000";
-                document.querySelector(".preview").srcdoc = HTMLmsg.value;
-            }
-        })
-
-        if(HTMLmsgType.checked) {
-            HTMLmsg.style.display = "block";
-            HTMLmsg.setAttribute("required", "true");
-            TextMsg.style.display = "none";
-            HTMLRadio.style.backgroundColor = "#d80128";
-            HTMLRadio.style.color = "#ffffff";
-            TextRadio.style.backgroundColor = "#f5f5f5";
-            TextRadio.style.color = "#000000";
-        }
-
-        BulkMail.addEventListener("change", function() {
-            if (BulkMail.checked) {
-                recipients.setAttribute("disabled", "true");
-                recipients.setAttribute("required", "false");
-                document.querySelector(".BulkMail").style.backgroundColor = "#d80128";
-                document.querySelector(".BulkMail").style.color = "#ffffff";
-            }
-            else {
-                recipients.removeAttribute("disabled");
-                recipients.setAttribute("required", "true");
-                document.querySelector(".BulkMail").style.backgroundColor = "#f5f5f5";
-                document.querySelector(".BulkMail").style.color = "#000000";
-            }
-        })
-
-        HTMLmsgType.addEventListener("change", function() {
-            if (HTMLmsgType.checked) {
-                HTMLmsg.style.display = "block";
-                HTMLmsg.setAttribute("required", "true");
-                TextMsg.style.display = "none";
-                // TextMsg.setAttribute("required", "false");
-                TextMsg.removeAttribute("required");
-                TextMsgType.checked = false;
-                HTMLRadio.style.backgroundColor = "#d80128";
-                HTMLRadio.style.color = "#ffffff";
-                TextRadio.style.backgroundColor = "#f5f5f5";
-                TextRadio.style.color = "#000000";
-            }
-            else {
-                HTMLmsg.style.display = "none";
-                TextMsg.style.display = "block";
-                HTMLRadio.style.backgroundColor = "#f5f5f5";
-                HTMLRadio.style.color = "#000000";
-                TextRadio.style.backgroundColor = "#d80128";
-                TextRadio.style.color = "#ffffff";
-                TextMsg.setAttribute("required", "true");
-                // HTMLmsg.setAttribute("required", "false");
-                HTMLmsg.removeAttribute("required");
-            }
-        })
-
-        TextMsgType.addEventListener("change", function() {
-            if (TextMsgType.checked) {
-                HTMLmsg.style.display = "none";
-                // HTMLmsg.setAttribute("required", "false");
-                HTMLmsg.removeAttribute("required");
-                TextMsg.style.display = "block";
-                TextMsg.setAttribute("required", "true");
-                HTMLmsgType.checked = false;
-                HTMLRadio.style.backgroundColor = "#f5f5f5";
-                HTMLRadio.style.color = "#000000";
-                TextRadio.style.backgroundColor = "#d80128";
-                TextRadio.style.color = "#ffffff";
-            }
-            else {
-                HTMLmsg.style.display = "block";
-                TextMsg.style.display = "none";
-                HTMLRadio.style.backgroundColor = "#d80128";
-                HTMLRadio.style.color = "#ffffff";
-                TextRadio.style.backgroundColor = "#f5f5f5";
-                TextRadio.style.color = "#000000";
-                // TextMsg.setAttribute("required", "false");
-                TextMsg.removeAttribute("required");
-                HTMLmsg.setAttribute("required", "true");
-            }
-        })
-
-        if(HTMLmsg.value.length < 2) {
-            document.querySelector(".previewcontainer").style.display = "none";
-        }
-
-        HTMLmsg.addEventListener("input", function() {
-            if(HTMLmsg.value.length > 0) {
-                document.querySelector(".previewcontainer").style.display = "grid";
-                document.querySelector(".preview").srcdoc = HTMLmsg.value;
-            }
-            else {
-                document.querySelector(".previewcontainer").style.display = "none";
-            }
-        })
-
-        const file = document.querySelector("#attachment");
-        const preview = document.querySelector("#attachmentPreview");
-
-        if (file.value == "") {
-            preview.style.display = "none";
-        }
-
-        file.addEventListener("change", function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.addEventListener("load", function() {
-                    preview.style.display = "block";
-                    preview.src = reader.result;
-                });
-                reader.readAsDataURL(file);
-            }
-        })
+        }).mount('#app')
     </script>
 </body>
 </html>
