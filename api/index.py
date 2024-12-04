@@ -7,7 +7,7 @@ from collections import defaultdict
 
 # Load environment variables
 load_dotenv()
-app = Flask(__name__)
+app = Flask(__name__, template_folder='Templates')
 
 # Configuration
 API_TOKEN = 'c36dcac846da96b2caf44360593c286b2d9b6b12'
