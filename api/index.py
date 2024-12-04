@@ -184,7 +184,6 @@ def index():
 def get_stats():
     if not QR_CODE_ID:
         create_or_get_qr_code()
-    
     try:
         response = requests.get(
             f'{API_BASE_URL}/hovercode/{QR_CODE_ID}/activity/',
@@ -194,7 +193,12 @@ def get_stats():
         )
         raw_stats = response.json()
         processed_stats = process_scan_stats(raw_stats)
-        return jsonify(processed_stats)
+        
+        # Add headers to prevent caching
+        resp = make_response(jsonify(processed_stats))
+        resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        resp.headers['Pragma'] = 'no-cache'
+        return resp
     except requests.RequestException as e:
         return jsonify({'error': str(e)}), 500
 
