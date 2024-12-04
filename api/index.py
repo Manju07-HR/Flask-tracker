@@ -5,10 +5,12 @@ import os
 from dotenv import load_dotenv
 from collections import defaultdict
 from flask import make_response
+from flask_cors import CORS
 
 # Load environment variables
 load_dotenv()
 app = Flask(__name__, template_folder='Templates')
+CORS(app)
 
 # Configuration
 API_TOKEN = 'c36dcac846da96b2caf44360593c286b2d9b6b12'
@@ -200,4 +202,4 @@ def get_stats():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
